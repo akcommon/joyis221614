@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
          startAkService(
             "https://d1ex46a0eaqlz9.cloudfront.net",
             "touchvpn",
-            resources.getString(R.string.app_name)
+            resources.getString(R.string.app_name),"CH"
         ) {
             when (it) {
                 Calling.CONNECTED -> {

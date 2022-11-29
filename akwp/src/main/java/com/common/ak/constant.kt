@@ -42,6 +42,7 @@ fun Context.startAkService(
     vpnUrl: String,
     carrierId: String,
     appName: String,
+    virtualLocation:String,
     callback: (call: Calling) -> Unit
 ) {
     UnifiedSdk.getVpnState(object : unified.vpn.sdk.Callback<VpnState> {
@@ -70,7 +71,7 @@ fun Context.startAkService(
 
                 val config = UnifiedSdkConfig.newBuilder().build()
                 UnifiedSdk.getInstance(clientInfo, config)
-                login(callback)
+                login(virtualLocation,callback)
             }
         }
 
@@ -81,12 +82,12 @@ fun Context.startAkService(
     })
 }
 
-fun login(callback: (call: Calling) -> Unit) {
+fun login(virtualLocation:String,callback: (call: Calling) -> Unit) {
     val authMethod = AuthMethod.anonymous()
     UnifiedSdk.getInstance().backend
         .login(authMethod, object : unified.vpn.sdk.Callback<User> {
             override fun success(p0: User) {
-                connectVPN(callback)
+                connectVPN(virtualLocation,callback)
             }
 
             override fun failure(p0: VpnException) {
@@ -95,7 +96,7 @@ fun login(callback: (call: Calling) -> Unit) {
         })
 }
 
-fun connectVPN(callback: (call: Calling) -> Unit) {
+fun connectVPN(virtualLocation:String,callback: (call: Calling) -> Unit) {
     val fallbackOrder: MutableList<String> = java.util.ArrayList()
     fallbackOrder.add(HydraTransport.TRANSPORT_ID)
     fallbackOrder.add(OpenVpnTransportConfig.tcp().name)
@@ -106,7 +107,7 @@ fun connectVPN(callback: (call: Calling) -> Unit) {
         .withTransportFallback(fallbackOrder)
         .withTransport(HydraTransport.TRANSPORT_ID)
         .withVirtualLocation(
-            "CH"
+            virtualLocation
         )
         .addDnsRule(TrafficRule.Builder.bypass().fromDomains(bypassDomains))
         .build(), object : CompletableCallback {

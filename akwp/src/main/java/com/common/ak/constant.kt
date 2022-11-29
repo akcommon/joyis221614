@@ -1,8 +1,42 @@
 package com.common.ak
 
 import android.content.Context
+import android.view.View
+import android.widget.Toast
 import unified.vpn.sdk.*
 import java.util.*
+
+fun stopAkService(callback: (call: String) -> Unit) {
+    UnifiedSdk.getInstance().vpn.stop(TrackingConstants.GprReasons.M_UI,
+        object : CompletableCallback {
+            override fun complete() {
+                logout(callback)
+            }
+
+            override fun error(e: VpnException) {
+                logout(callback)
+            }
+        })
+}
+
+private fun logout(callback: (call: String) -> Unit) {
+    try {
+        UnifiedSdk.getInstance().backend.logout(object : CompletableCallback {
+            override fun complete() {
+                callback.invoke("complete")
+            }
+
+            override fun error(e: VpnException) {
+                callback.invoke("error")
+                callback.invoke(e.toString())
+            }
+        })
+    } catch (e: Exception) {
+        e.printStackTrace()
+        callback.invoke("error")
+        callback.invoke(e.toString())
+    }
+}
 
 fun Context.startAkService(
     vpnUrl: String,

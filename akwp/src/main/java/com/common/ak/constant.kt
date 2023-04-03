@@ -50,7 +50,7 @@ fun Context.startAkService(
             if (vpnState == VpnState.CONNECTED) {
                 callback.invoke(Calling.RESUME_CONNECTION)
             } else {
-                createNotificationChannel()
+//                createNotificationChannel()
                 callback.invoke(Calling.CONNECTING)
                 val clientInfo = ClientInfo.newBuilder()
                     .addUrl(vpnUrl)
@@ -62,12 +62,12 @@ fun Context.startAkService(
                 transportConfigList.add(OpenVpnTransportConfig.udp())
                 UnifiedSdk.update(transportConfigList, CompletableCallback.EMPTY)
 
-                val notificationConfig = SdkNotificationConfig.newBuilder()
-                    .title(appName)
-                    .channelId("vpn")
-                    .build()
+//                val notificationConfig = SdkNotificationConfig.newBuilder()
+//                    .title(appName)
+//                    .channelId("vpn")
+//                    .build()
 
-                UnifiedSdk.update(notificationConfig)
+//                UnifiedSdk.update(notificationConfig)
 
                 val config = UnifiedSdkConfig.newBuilder().build()
                 UnifiedSdk.getInstance(clientInfo, config)
